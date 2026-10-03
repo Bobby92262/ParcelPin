@@ -1,16 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.ParcelPin" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+        <!-- Primary Casing color (Tangy Orange). -->
+        <item name="colorPrimary">@color/split_orange_primary</item>
+        <item name="colorPrimaryVariant">@color/split_orange_primary</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+
+        <!-- Secondary color (Sky Blue text). -->
+        <item name="colorSecondary">@color/split_sky_blue</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+
+        <!-- Backgrounds -->
+        <item name="android:colorBackground">@color/split_vanilla_cream</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">@color/split_text_dark</item>
+
+        <!-- Status Bar -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 </resources>

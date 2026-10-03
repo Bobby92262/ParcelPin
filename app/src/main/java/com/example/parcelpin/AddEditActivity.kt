@@ -3,6 +3,7 @@ package com.example.parcelpin
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +59,37 @@ class AddEditActivity : AppCompatActivity() {
                         android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
         }
 
+        // 1. Create a box container (FrameLayout or MaterialCardView)
+        val imageCard = com.google.android.material.card.MaterialCardView(this).apply {
+            radius = 16f // rounded corners
+            cardElevation = 8f
+            strokeWidth = 2
+            strokeColor = android.graphics.Color.LTGRAY
+
+            // Margins to space out from inout fields
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                400// Height of the image card
+            ).apply {
+                setMargins(0, 16, 0, 16)
+            }
+        }
+
+        //2. Create Imageview inside the box
+        val mapImageView = android.widget.ImageView(this).apply {
+            scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+            // A Default Placeholder until map screenshot is loaded
+            setImageResource(android.R.drawable.ic_menu_mapmode)
+        }
+
+        //3. Add an image to card, and card to root layout
+        imageCard.addView(
+            mapImageView,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+
         val saveButton = Button(this).apply {
             text = "Save"
 
@@ -78,6 +110,7 @@ class AddEditActivity : AppCompatActivity() {
         root.addView(descriptionInput)
         root.addView(xInput)
         root.addView(yInput)
+        root.addView(imageCard)
         root.addView(saveButton)
         root.addView(cancelButton)
 
