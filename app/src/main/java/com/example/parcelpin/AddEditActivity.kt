@@ -1,0 +1,203 @@
+package com.example.parcelpin
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.parcelpin.models.PlacemarkModel
+
+class AddEditActivity : AppCompatActivity() {
+
+    private lateinit var titleInput: EditText
+    private lateinit var descriptionInput: EditText
+    private lateinit var xInput: EditText
+    private lateinit var yInput: EditText
+
+    private var editingId: Long? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        createUserInterface()
+
+        editingId = intent.getLongExtra("id", -1L)
+
+        if (editingId != -1L) {
+            loadExistingMark(editingId!!)
+        }
+    }
+
+    private fun createUserInterface() {
+
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(32, 320, 32, 32)
+        }
+
+        titleInput = EditText(this).apply {
+            hint = "Title"
+        }
+
+        descriptionInput = EditText(this).apply {
+            hint = "Description"
+        }
+
+        xInput = EditText(this).apply {
+            hint = "X coordinate"
+            inputType =
+                android.text.InputType.TYPE_CLASS_NUMBER or
+                        android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        }
+
+        yInput = EditText(this).apply {
+            hint = "Y coordinate"
+            inputType =
+                android.text.InputType.TYPE_CLASS_NUMBER or
+                        android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        }
+
+        // 1. Create a box container (FrameLayout or MaterialCardView)
+        val imageCard = com.google.android.material.card.MaterialCardView(this).apply {
+            radius = 16f // rounded corners
+            cardElevation = 8f
+            strokeWidth = 2
+            strokeColor = android.graphics.Color.LTGRAY
+
+            // Margins to space out from inout fields
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                400// Height of the image card
+            ).apply {
+                setMargins(0, 16, 0, 16)
+            }
+        }
+
+        //2. Create Imageview inside the box
+        val mapImageView = android.widget.ImageView(this).apply {
+            scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+            // A Default Placeholder until map screenshot is loaded
+            setImageResource(android.R.drawable.ic_menu_mapmode)
+        }
+
+        //3. Add an image to card, and card to root layout
+        imageCard.addView(
+            mapImageView,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+
+        val saveButton = Button(this).apply {
+            text = "Save"
+
+            setOnClickListener {
+                saveMark()
+            }
+        }
+
+        val cancelButton = Button(this).apply {
+            text = "Cancel"
+
+            setOnClickListener {
+                finish()
+            }
+        }
+
+        root.addView(titleInput)
+        root.addView(descriptionInput)
+        root.addView(xInput)
+        root.addView(yInput)
+        root.addView(imageCard)
+        root.addView(saveButton)
+        root.addView(cancelButton)
+
+        setContentView(root)
+    }
+
+    private fun loadExistingMark(id: Long) {
+
+        val mark = AppData.placedMarks.findOne(id)
+
+        if (mark == null) {
+            Toast.makeText(
+                this,
+                "Mark not found",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            finish()
+            return
+        }
+
+        titleInput.setText(mark.title)
+        descriptionInput.setText(mark.description)
+        xInput.setText(mark.latitude.toString())
+        yInput.setText(mark.longitude.toString())
+    }
+
+    private fun saveMark() {
+
+        val title = titleInput.text.toString().trim()
+        val description = descriptionInput.text.toString().trim()
+
+        if (title.isEmpty()) {
+            titleInput.error = "Title is required"
+            return
+        }
+
+        val x = xInput.text.toString().toDoubleOrNull()
+
+        if (x == null) {
+            xInput.error = "Enter a valid number"
+            return
+        }
+
+        val y = yInput.text.toString().toDoubleOrNull()
+
+        if (y == null) {
+            yInput.error = "Enter a valid number"
+            return
+        }
+
+        if (editingId == null || editingId == -1L) {
+
+            val mark = PlacemarkModel(
+                title = title,
+                description = description,
+                latitude = x,
+                longitude = y
+            )
+
+            AppData.placedMarks.create(mark)
+
+            Toast.makeText(
+                this,
+                "Mark created",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        } else {
+
+            val mark = PlacemarkModel(
+                id = editingId!!,
+                title = title,
+                description = description,
+                latitude = x,
+                longitude = y
+            )
+
+            AppData.placedMarks.update(mark)
+
+            Toast.makeText(
+                this,
+                "Mark updated",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        finish()
+    }
+}
