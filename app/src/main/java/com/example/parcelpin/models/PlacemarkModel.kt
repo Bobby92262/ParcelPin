@@ -1,5 +1,6 @@
 package com.example.parcelpin.models
 
+
 data class PlacemarkModel(
     var id: Long = 0,
     var title: String = "",
