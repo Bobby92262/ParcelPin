@@ -89,7 +89,7 @@
                 android:focusable="auto"
                 android:minHeight="64dp"
                 android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dialog" />
         </LinearLayout>
 
         <Button
