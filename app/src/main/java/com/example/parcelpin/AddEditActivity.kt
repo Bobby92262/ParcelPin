@@ -62,7 +62,7 @@ class AddEditActivity : AppCompatActivity() {
         logoChoice = findViewById(R.id.logoChoice)
 
         val logonames = availableLogos.keys.toList()
-        val dummynames = listOf("test1", "test2","test3", "test4", "test5")
+        //val dummynames = listOf("test1", "test2","test3", "test4", "test5")
 
         val saveButton =
             findViewById<Button>(R.id.saveButton)
@@ -74,7 +74,7 @@ class AddEditActivity : AppCompatActivity() {
         val spinnerAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            dummynames
+            logonames
         )
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         logoChoice.adapter = spinnerAdapter
@@ -82,7 +82,7 @@ class AddEditActivity : AppCompatActivity() {
         //Listener for logo choice from spinner
         logoChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedLogo = dummynames[position]
+                    selectedLogo = logonames[position]
                     updateLogoDisplay(selectedLogo)
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {
