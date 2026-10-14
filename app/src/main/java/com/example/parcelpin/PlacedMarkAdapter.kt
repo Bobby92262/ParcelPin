@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.parcelpin.models.PlacemarkModel
@@ -32,6 +33,9 @@ class PlacedMarkAdapter(
 
         val deleteButton: Button =
             itemView.findViewById(R.id.deleteButton)
+
+        // Binding the Imageview from item_placed_mark.xml layout
+        val logoView: ImageView = itemView.findViewById(R.id.logoView)
     }
 
     override fun onCreateViewHolder(
@@ -64,6 +68,20 @@ class PlacedMarkAdapter(
 
         holder.coordinatesText.text =
             "X: ${mark.latitude}, Y: ${mark.longitude}"
+
+        // Map saved string to R.drawable constant
+        val logoResId = when (mark.image) {
+            "an_post" -> R.drawable.an_post
+            "dhl" -> R.drawable.dhl
+            "dpd" -> R.drawable.dpd
+            "drop2shop" -> R.drawable.drop2shop
+            "fedex" -> R.drawable.fedex
+            "vinted" -> R.drawable.vinted
+            else -> R.drawable.an_post
+        }
+
+        // Set the image resource
+        holder.logoView.setImageResource(logoResId)
 
         holder.editButton.setOnClickListener {
             onEdit(mark)
