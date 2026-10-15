@@ -2,12 +2,11 @@ package com.example.parcelpin
 
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import android.widget.Button
 import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +34,31 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, AddEditActivity::class.java)
             )
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_add_mark -> {
+                startActivity(
+                    Intent(this, AddEditActivity::class.java)
+                )
+                true
+            }
+
+            R.id.item_view_marks -> {
+                startActivity(
+                    Intent(this, MarkListActivity::class.java)
+                )
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
 

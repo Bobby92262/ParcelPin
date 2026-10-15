@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.NumberPicker
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -30,7 +29,7 @@ class AddEditActivity : AppCompatActivity() {
 
     private var editingId: Long? = null
 
-    //Dispaly labels for the dropdown options
+    //Display labels for the dropdown options
     private val proximityOptions = arrayOf(
         "1 - Nearest",
         "2 - Close",
