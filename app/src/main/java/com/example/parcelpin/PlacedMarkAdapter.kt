@@ -22,8 +22,8 @@ class PlacedMarkAdapter(
         val titleText: TextView =
             itemView.findViewById(R.id.titleText)
 
-        val descriptionText: TextView =
-            itemView.findViewById(R.id.descriptionText)
+        val proximityText: TextView =
+            itemView.findViewById<TextView>(R.id.proximityText)
 
         val coordinatesText: TextView =
             itemView.findViewById(R.id.coordinatesText)
@@ -63,8 +63,8 @@ class PlacedMarkAdapter(
         holder.titleText.text =
             "${mark.id}: ${mark.title}"
 
-        holder.descriptionText.text =
-            mark.description
+        holder.proximityText.text =
+            "Proximity Zone: ${mark.proximity}"
 
         holder.coordinatesText.text =
             "X: ${mark.latitude}, Y: ${mark.longitude}"
