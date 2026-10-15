@@ -20,7 +20,7 @@ class PlacemarkMemStore : PlacemarkStore {
         val foundPlacemark = findOne(placemark.id)
         if (foundPlacemark != null) {
             foundPlacemark.title = placemark.title
-            foundPlacemark.description = placemark.description
+            foundPlacemark.proximity = placemark.proximity
             foundPlacemark.image = placemark.image
             foundPlacemark.latitude = placemark.latitude
             foundPlacemark.longitude = placemark.longitude

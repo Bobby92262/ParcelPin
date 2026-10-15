@@ -1,6 +1,8 @@
 package com.example.parcelpin
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -16,7 +18,7 @@ import com.example.parcelpin.models.PlacemarkModel
 class AddEditActivity : AppCompatActivity() {
 
     private lateinit var titleInput: EditText
-    private lateinit var descriptionInput: EditText
+    private lateinit var proximitySpinner: Spinner
     private lateinit var xInput: EditText
     private lateinit var yInput: EditText
 
@@ -26,6 +28,15 @@ class AddEditActivity : AppCompatActivity() {
 
 
     private var editingId: Long? = null
+
+    //Display labels for the dropdown options
+    private val proximityOptions = arrayOf(
+        "1 - Nearest",
+        "2 - Close",
+        "3 - Moderate",
+        "4 - Far",
+        "5 - Furthest"
+    )
 
     // Default logo set
     private var selectedLogo: String = "an_post"
@@ -40,16 +51,24 @@ class AddEditActivity : AppCompatActivity() {
         "vinted" to R.drawable.vinted
     )
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_add_edit)
+
+        // Enable the Up/Back arrow in action bar
+        val toolbar = findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(false)
+        }
 
         titleInput =
             findViewById(R.id.titleInput)
 
-        descriptionInput =
-            findViewById(R.id.descriptionInput)
+        proximitySpinner = findViewById(R.id.proximitySpinner)
 
         xInput =
             findViewById(R.id.xInput)
@@ -90,6 +109,14 @@ class AddEditActivity : AppCompatActivity() {
                 }
         }
 
+        val proxAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            proximityOptions
+        )
+        proxAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        proximitySpinner.adapter = proxAdapter
+
         editingId =
             intent.getLongExtra("id", -1L)
                 .takeIf { it != -1L }
@@ -111,6 +138,16 @@ class AddEditActivity : AppCompatActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun loadExistingMark(id: Long) {
 
         val mark =
@@ -129,7 +166,10 @@ class AddEditActivity : AppCompatActivity() {
         }
 
         titleInput.setText(mark.title)
-        descriptionInput.setText(mark.description)
+
+        val index = (mark.proximity - 1).coerceIn(0, 4)
+        proximitySpinner.setSelection(index)
+
         xInput.setText(mark.latitude.toString())
         yInput.setText(mark.longitude.toString())
 
@@ -155,8 +195,8 @@ class AddEditActivity : AppCompatActivity() {
         val title =
             titleInput.text.toString().trim()
 
-        val description =
-            descriptionInput.text.toString().trim()
+        val proximity =
+            proximitySpinner.selectedItemPosition + 1
 
         if (title.isEmpty()) {
             titleInput.error = "Title is required"
@@ -183,7 +223,7 @@ class AddEditActivity : AppCompatActivity() {
 
             val mark = PlacemarkModel(
                 title = title,
-                description = description,
+                proximity = proximity,
                 latitude = x,
                 longitude = y,
                 image = selectedLogo
@@ -202,7 +242,7 @@ class AddEditActivity : AppCompatActivity() {
             val mark = PlacemarkModel(
                 id = editingId!!,
                 title = title,
-                description = description,
+                proximity = proximity,
                 latitude = x,
                 longitude = y,
                 image = selectedLogo
