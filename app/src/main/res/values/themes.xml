@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.ParcelPin" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.ParcelPin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary Casing color (Tangy Orange). -->
         <item name="colorPrimary">@color/split_orange_primary</item>
         <item name="colorPrimaryVariant">@color/split_orange_primary</item>
