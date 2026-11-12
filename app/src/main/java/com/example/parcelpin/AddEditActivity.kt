@@ -14,6 +14,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcelpin.models.PlacemarkModel
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
+
 
 class AddEditActivity : AppCompatActivity() {
 
@@ -28,6 +31,12 @@ class AddEditActivity : AppCompatActivity() {
 
 
     private var editingId: Long? = null
+
+    private var selectedImageUri: Uri? = null
+
+    private var previousLogoPos: Int = 0
+
+    private var isProgrammaticSelection: Boolean = false
 
     //Display labels for the dropdown options
     private val proximityOptions = arrayOf(
@@ -48,9 +57,33 @@ class AddEditActivity : AppCompatActivity() {
         "dpd" to R.drawable.dpd,
         "drop2shop" to R.drawable.drop2shop,
         "fedex" to R.drawable.fedex,
-        "vinted" to R.drawable.vinted
+        "vinted" to R.drawable.vinted,
     )
 
+    private val customOptionLabel = "+ Custom Logo..."
+    val imagePicker =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+            if (uri != null) {
+                // Keep access to the document URI for later use, when supported.
+                try {
+                    contentResolver.takePersistableUriPermission(
+                        uri,
+                        android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (_: SecurityException) {
+                    // Some providers may not grant persistable access.
+                }
+
+                selectedImageUri = uri
+                selectedLogo = uri.toString()
+                logoDisplay.setImageURI(uri)
+                previousLogoPos = logoChoice.selectedItemPosition
+            } else {
+                //User canceled the image selection - revert back to valid position
+                isProgrammaticSelection = true
+                logoChoice.setSelection(previousLogoPos)
+            }
+        }
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +113,7 @@ class AddEditActivity : AppCompatActivity() {
         logoDisplay = findViewById(R.id.logoDisplay)
         logoChoice = findViewById(R.id.logoChoice)
 
-        val logonames = availableLogos.keys.toList()
+        val logoNames = availableLogos.keys.toList() + customOptionLabel
         //val dummynames = listOf("test1", "test2","test3", "test4", "test5")
 
         val saveButton =
@@ -93,7 +126,7 @@ class AddEditActivity : AppCompatActivity() {
         val spinnerAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            logonames
+            logoNames
         )
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         logoChoice.adapter = spinnerAdapter
@@ -101,9 +134,22 @@ class AddEditActivity : AppCompatActivity() {
         //Listener for logo choice from spinner
         logoChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedLogo = logonames[position]
-                    updateLogoDisplay(selectedLogo)
+                    //Quick return if user cancels selection
+                    if (isProgrammaticSelection) {
+                        isProgrammaticSelection = false
+                        return
+                    }
+
+                    selectedLogo = logoNames[position]
+                    if (selectedLogo == customOptionLabel) {
+                        imagePicker.launch(arrayOf("image/*"))
+                    } else {
+                        previousLogoPos = position
+                        selectedImageUri = null
+                        updateLogoDisplay(selectedLogo)
+                    }
                 }
+
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     // Handle case where nothing is selected
                 }
@@ -175,13 +221,28 @@ class AddEditActivity : AppCompatActivity() {
 
         if (mark.image.isNotEmpty()) {
             selectedLogo = mark.image
-            val logonames = availableLogos.keys.toList()
-            val index = logonames.indexOf(selectedLogo)
-            if (index >= 0) {
-                logoChoice.setSelection(index)
+            val logoNames = availableLogos.keys.toList() + customOptionLabel
+            if (availableLogos.containsKey(selectedLogo)){
+                val index = logoNames.indexOf(selectedLogo)
+                if (logoNames != null){
+                    isProgrammaticSelection = true
+                    logoChoice.setSelection(index)
+                    previousLogoPos = index
+                }
+                updateLogoDisplay(selectedLogo)
+            } else{
+                val customIndex = logoNames.indexOf(customOptionLabel)
+                isProgrammaticSelection = true
+                logoChoice.setSelection(customIndex)
+                previousLogoPos = customIndex
+
+                selectedImageUri = Uri.parse(selectedLogo)
+                try{
+                    logoDisplay.setImageURI(selectedImageUri)
+                } catch (_: Exception){
+                    logoDisplay.setImageResource(R.drawable.an_post)
+                }
             }
-            val resId = availableLogos[selectedLogo] ?: R.drawable.an_post
-            logoDisplay.setImageResource(resId)
         }
     }
 

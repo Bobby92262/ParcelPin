@@ -1,6 +1,7 @@
 package com.example.parcelpin
 
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,11 +78,21 @@ class PlacedMarkAdapter(
             "drop2shop" -> R.drawable.drop2shop
             "fedex" -> R.drawable.fedex
             "vinted" -> R.drawable.vinted
-            else -> R.drawable.an_post
+            else -> null
         }
 
-        // Set the image resource
-        holder.logoView.setImageResource(logoResId)
+        if (logoResId != null){
+            //render bundled carrier drawable
+            holder.logoView.setImageResource(logoResId)
+        } else if (mark.image.isNotEmpty()) {
+            try {
+                holder.logoView.setImageURI(Uri.parse(mark.image))
+            } catch (_: Exception){
+                holder.logoView.setImageResource(R.drawable.an_post)
+            }
+        }else {
+            holder.logoView.setImageResource(R.drawable.an_post)
+        }
 
         holder.editButton.setOnClickListener {
             onEdit(mark)
