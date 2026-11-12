@@ -12,11 +12,13 @@ class PlacemarkMemStore : PlacemarkStore {
     }
 
     override fun create(placemark: PlacemarkModel) {
+        placemark.validate()
         placemark.id = getId()
         placemarks.add(placemark)
     }
 
     override fun update (placemark: PlacemarkModel): Boolean {
+        placemark.validate()
         val foundPlacemark = findOne(placemark.id)
         if (foundPlacemark != null) {
             foundPlacemark.title = placemark.title
@@ -29,6 +31,7 @@ class PlacemarkMemStore : PlacemarkStore {
         }
         return false
     }
+
 
     override fun delete(id: Long): Boolean {
         return placemarks.removeIf { it.id == id }

@@ -117,7 +117,7 @@
             android:ems="10"
             android:gravity="clip_horizontal|center|center_vertical"
             android:hint="X coordinate"
-            android:inputType="number|numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             android:textSize="24sp" />
 
         <EditText
@@ -128,7 +128,7 @@
             android:ems="10"
             android:gravity="center"
             android:hint="Y coordinate"
-            android:inputType="number|numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             android:textSize="24sp" />
 
         <LinearLayout
