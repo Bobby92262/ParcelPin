@@ -36,7 +36,7 @@ class AddEditActivity : AppCompatActivity() {
 
     private var previousLogoPos: Int = 0
 
-    private var isPrgrammaticSelection: Boolean = false
+    private var isProgrammaticSelection: Boolean = false
 
     //Display labels for the dropdown options
     private val proximityOptions = arrayOf(
@@ -80,7 +80,7 @@ class AddEditActivity : AppCompatActivity() {
                 previousLogoPos = logoChoice.selectedItemPosition
             } else {
                 //User canceled the image selection - revert back to valid position
-                isPrgrammaticSelection = true
+                isProgrammaticSelection = true
                 logoChoice.setSelection(previousLogoPos)
             }
         }
@@ -113,7 +113,7 @@ class AddEditActivity : AppCompatActivity() {
         logoDisplay = findViewById(R.id.logoDisplay)
         logoChoice = findViewById(R.id.logoChoice)
 
-        val logonames = availableLogos.keys.toList() + customOptionLabel
+        val logoNames = availableLogos.keys.toList() + customOptionLabel
         //val dummynames = listOf("test1", "test2","test3", "test4", "test5")
 
         val saveButton =
@@ -126,7 +126,7 @@ class AddEditActivity : AppCompatActivity() {
         val spinnerAdapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            logonames
+            logoNames
         )
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         logoChoice.adapter = spinnerAdapter
@@ -135,12 +135,12 @@ class AddEditActivity : AppCompatActivity() {
         logoChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     //Quick return if user cancels selection
-                    if (isPrgrammaticSelection) {
-                        isPrgrammaticSelection = false
+                    if (isProgrammaticSelection) {
+                        isProgrammaticSelection = false
                         return
                     }
 
-                    selectedLogo = logonames[position]
+                    selectedLogo = logoNames[position]
                     if (selectedLogo == customOptionLabel) {
                         imagePicker.launch(arrayOf("image/*"))
                     } else {
@@ -221,18 +221,18 @@ class AddEditActivity : AppCompatActivity() {
 
         if (mark.image.isNotEmpty()) {
             selectedLogo = mark.image
-            val logonames = availableLogos.keys.toList() + customOptionLabel
+            val logoNames = availableLogos.keys.toList() + customOptionLabel
             if (availableLogos.containsKey(selectedLogo)){
-                val index = logonames.indexOf(selectedLogo)
-                if (logonames != null){
-                    isPrgrammaticSelection = true
+                val index = logoNames.indexOf(selectedLogo)
+                if (logoNames != null){
+                    isProgrammaticSelection = true
                     logoChoice.setSelection(index)
                     previousLogoPos = index
                 }
                 updateLogoDisplay(selectedLogo)
             } else{
-                val customIndex = logonames.indexOf(customOptionLabel)
-                isPrgrammaticSelection = true
+                val customIndex = logoNames.indexOf(customOptionLabel)
+                isProgrammaticSelection = true
                 logoChoice.setSelection(customIndex)
                 previousLogoPos = customIndex
 
